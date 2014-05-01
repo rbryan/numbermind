@@ -1,5 +1,6 @@
 import sys
 sys.path.append("./include/")
+sys.setrecursionlimit(10000);
 import PyBool_public_interface as Bool
 import PyBool_builder as BoolBld
 
@@ -9,23 +10,28 @@ master_formula=""
 def main():
 
     #build the formula representation
-    f = open("test.txt","r")
+    f = open("test2.txt","r")
     clauses = build_clauses(f);
     f.close();
+    print clauses[-1]
 
     #write the formula to a temporary file
     f = open("tmp.txt","w");
 
     #Some stuff for PBL
-    write_header(f); #problem specific, sort of
+    #write_header(f); #problem specific, sort of
     write_props(f,clauses);
-    write_main(f,len(clauses));
-    
-    f.write(master_formula);
+    #write_main(f,len(clauses));
+   
+    #f.write(master_formula);
     f.close();
 
     #build an expression from the tmp file
-    expr = Bool.parse_std("tmp.txt");
+    #expr = Bool.parse_std("tmp.txt");
+    #expr = expr["main_expr"]
+    #expr = Bool.simplify(expr);
+#    expr = Bool.poly_cnf(expr);
+    #print (Bool.print_expr(expr))
 
 
 def write_main(f,n):
@@ -38,7 +44,9 @@ def write_main(f,n):
 
 def write_props(f,clauses):
 	for i in range(len(clauses)):
-		f.write("P"+str(i)+" = " + clauses[i]+"\n");
+		f.write(clauses[i]);
+		if not i==len(clauses)-1:
+			f.write("&");
 
 def write_header(f):
     f.write("Var_Order : ");
@@ -130,6 +138,32 @@ def build_formula(guess,num):
     f+=(")")
     return f;
 
+def build_constraints(n,clauses):
+	t=""
+	for i in range(1,n+1):
+		s="("
+		for j in range(10):
+			s+="("
+			for k in range(10):
+				if(j==k):
+					s+=(" x"+str(i)+str(k)+" ")
+					flag=False
+				else:
+					s+=(" ~x"+str(i)+str(k)+" ")
+				if not k==9:
+					s+="&"
+			s+=")"
+			if not j==9:
+				s+="|"
+
+		s+=")"
+		if not i==n:
+			s+="&"
+		t+=s
+	clauses.append(t);
+	return clauses;
+		
+
 def build_clauses(f):
     clauses = []
     for line in f:
@@ -138,7 +172,8 @@ def build_clauses(f):
         num = int(parts[1])
 #        print "\n\n\n\nNEW LINE\n\n\n\n"
         clauses.append(build_formula(guess,num));
-#    print clauses;
+	
+    clauses = build_constraints(len(guess),clauses)
     return clauses;
 
 
