@@ -1,4 +1,5 @@
 from decimal import *
+import boolean
 NUM_LEN=0
 
 getcontext().prec=60;
@@ -42,7 +43,7 @@ def main():
 
 		for i in range(NUM_LEN):
 			n = int(test[i]);
-			sol_mat[i][n] = Decimal(Decimal(sol_mat[i][n])*Decimal(result)*Decimal(1.0)/Decimal(NUM_LEN));
+			sol_mat[i][n] = Decimal(Decimal(sol_mat[i][n])+Decimal(result)*Decimal(1.0)/Decimal(NUM_LEN));
 			print Decimal(sol_mat[i][n]),Decimal(result),Decimal(1.0),Decimal(NUM_LEN);
 	print_sol(sol_mat);
 	print sol_mat;
