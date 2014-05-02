@@ -10,13 +10,13 @@ master_formula=""
 def main():
 
     #build the formula representation
-    f = open("test2.txt","r")
+    f = open("input.txt","r")
     clauses = build_clauses(f);
     f.close();
-    print clauses[-1]
+#    print clauses[-1]
 
     #write the formula to a temporary file
-    f = open("tmp.txt","w");
+    f = open("function.txt","w");
 
     #Some stuff for PBL
     #write_header(f); #problem specific, sort of
@@ -102,7 +102,7 @@ def build_formula(guess,num):
                 
     elif num==2:
         for i in range(len(var_array)):
-            for j in range(len(var_array)):
+            for j in range(i+1,len(var_array)):
                 f+=("(")
                 for l in range(len(var_array)):
                     f+=(" ")
@@ -119,16 +119,16 @@ def build_formula(guess,num):
                 
     elif num==3:
         for i in range(len(var_array)):
-            for j in range(len(var_array)):
+            for j in range(i+1,len(var_array)):
 
-                for k in range(len(var_array)):
+                for k in range(j+1,len(var_array)):
                     f+=("(")
                     for l in range(len(var_array)):
                         f+=(" ")
                         if l==i or l==j or l==k:
-                            f+=("x"+var_array[k]);
+                            f+=("x"+var_array[l]);
                         else:
-                            f+=("~x"+var_array[k]);
+                            f+=("~x"+var_array[l]);
                         if not l==len(var_array)-1:
                             f+=(" &")
                         f+=(" ")
